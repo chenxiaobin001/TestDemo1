@@ -14,9 +14,8 @@ class MoviesController < ApplicationController
   #   redirect_to @movie
   # end
   def index
-    queryParams = parseURLParameters(request.original_url)
-    @movies = Movie.order(queryParams[:sortField] + ' ' + queryParams[:sortDirection])
-        .limit(queryParams["limit"]).offset(queryParams["offset"])
+    queryParams = parseURLParameters(params)
+    @movies = Movie.order(queryParams[:sortField] + ' ' + queryParams[:sortDirection]).limit(queryParams["limit"]).offset(queryParams["offset"])
     render :json => @movies
   end
 
@@ -43,17 +42,19 @@ class MoviesController < ApplicationController
     return rating >= 0 && rating <= 5
   end
 
-  def parseURLParameters(url)
-    params = CGI.parse(URI.parse(url).query)
+  def parseURLParameters(queryParams)
+    params['offset'] = queryParams[:offset]
+    params['limit'] = queryParams[:limit]
+    params['orderBy'] = queryParams[:orderBy]
     # check parameter range
-    params["offset"] ||= [0]
-    params["offset"] = Integer(params["offset"][0])
+    params["offset"] ||= 0
+    params["offset"] = Integer(params["offset"])
     params["offset"] = params["offset"] >= 0 ? params["offset"] : 0
-    params["limit"] ||= [10]
-    params["limit"] = Integer(params["limit"][0])
+    params["limit"] ||= 10
+    params["limit"] = Integer(params["limit"])
     params["limit"] = params["limit"] >= 0 ? params["limit"] : 10
-    params["orderBy"] ||= ['title:asc']
-    tmp = params["orderBy"][0].split(':');
+    params["orderBy"] ||= 'title:asc'
+    tmp = params["orderBy"].split(':');
     if (!@@valid_sorting_fields.include? tmp[0])
       tmp[0] = 'title'
     end
@@ -61,7 +62,7 @@ class MoviesController < ApplicationController
     if tmp.length == 1
       params[:sortDirection] = 'asc'
     else
-      params[:sortDirection] = params["orderBy"][0].split(':')[1]
+      params[:sortDirection] = params["orderBy"].split(':')[1]
     end
     return params
   end

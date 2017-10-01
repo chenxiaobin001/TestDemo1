@@ -107,7 +107,7 @@ define(['ojs/ojcore', 'knockout', 'jquery','ojs/ojknockout', 'promise', 'ojs/ojl
             };
 
             function getBaseUrl() {
-                return window.location + 'movies/'
+                return window.location.protocol + '//' + window.location.host + '/movies/'
             };
 
             self.getCurrentItem = function(data) {
