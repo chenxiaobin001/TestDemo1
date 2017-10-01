@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  id: 1
+  title: MyString
+  image: MyString
+  rating: 1
+  release: 2017-09-30 21:16:11
+
+two:
+  id: 1
+  title: MyString
+  image: MyString
+  rating: 1
+  release: 2017-09-30 21:16:11

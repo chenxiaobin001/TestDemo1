@@ -1,0 +1,25 @@
+<%= form_with scope: :movie, url: movies_path, local: true do |form| %>
+    <p>
+      <%= form.label :title %><br>
+      <%= form.text_area :title %>
+    </p>
+
+    <p>
+      <%= form.label :image %><br>
+      <%= form.text_area :image %>
+    </p>
+
+    <p>
+      <%= form.label :rating %><br>
+      <%= form.text_area :rating %>
+    </p>
+
+    <p>
+      <%= form.label :releaseDate %><br>
+      <%= form.text_area :releaseDate %>
+    </p>
+
+    <p>
+      <%= form.submit %>
+    </p>
+<% end %>

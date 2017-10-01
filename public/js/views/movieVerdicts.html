@@ -1,0 +1,48 @@
+<!--
+  template for movie verdicts
+ -->
+<div class="oj-hybrid-padding oj-panel" style="margin-left: 1rem">
+    <h1>Movie Verdicts</h1>
+        <div class="">
+            <oj-list-view class="oj-listview-card-layout"
+                id="listview" aria-label="list movies" style=""
+                data="[[dataSource]]"
+                item.renderer="[[oj.KnockoutTemplateUtils.getRenderer('movie_template')]]"
+                selection-mode="single"
+                scroll-policy-options.fetch-size="15">
+            </oj-list-view>
+        </div>
+</div>
+
+<script type="text/html" id="movie_template">
+    <li data-bind="attr: {id: id}">
+        <div class="oj-flex" style="">
+            <div class="oj-flex-item oj-lg-12 oj-md-12 oj-sm-12">
+                <img style="width:100%; height:300px; padding-bottom: 1rem"
+                        data-bind="attr:{src: image}"/>
+            </div>
+            <div class="oj-flex-item oj-lg-12 oj-md-12 oj-sm-12"">
+                <div style="padding-bottom: 5px">
+                    <h4 data-bind="text: title"></h4>
+                </div>
+                <div>
+                    <span data-bind="text: releaseDate"></span>
+                </div>
+                <div>
+                    <span data-bind="text: ratingStr"></span>
+                </div>
+                <div class="oj-lg-12 oj-md-12 oj-sm-12 oj-flex-item" style="padding: 5px 0 0 0">
+                    <div style="width:100%">
+                        <oj-rating-gauge
+                                data-bind="id:'gauge-id-' + id,attr:{'readOnly': !released},
+                                        event: {mouseover: $parent.getCurrentItem($data)}"
+                                value="{{ratingInt}}"
+                                selected-state.color="black"
+                                on-value-changed="{{$parent.updateRating}}"
+                                style="width:120px;height:25px;"></oj-rating-gauge>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </li>
+</script>
