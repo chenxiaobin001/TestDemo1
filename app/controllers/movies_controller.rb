@@ -15,11 +15,8 @@ class MoviesController < ApplicationController
   # end
   def index
     queryParams = parseURLParameters(request.original_url)
-    if queryParams[:sortDirection] != 'asc'
-      @movies = Movie.order(queryParams[:sortField] + ' ' + queryParams[:sortDirection]).limit(queryParams["limit"]).offset(queryParams["offset"])
-    else
-      @movies = Movie.order(queryParams[:sortField]).limit(queryParams["limit"]).offset(queryParams["offset"])
-    end
+    @movies = Movie.order(queryParams[:sortField] + ' ' + queryParams[:sortDirection])
+        .limit(queryParams["limit"]).offset(queryParams["offset"])
     render :json => @movies
   end
 

@@ -55,6 +55,7 @@
                                         'changed-state.color' : '#fbce4a'},
                                         event: {mouseover: $parent.getCurrentItem($data)}"
                                 value="{{ratingInt}}"
+                                on-value-changed="[[$parent.updateRating]]"
                                 style="width:120px;height:25px;"></oj-rating-gauge>
                     </div>
                 </div>
