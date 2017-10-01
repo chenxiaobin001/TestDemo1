@@ -5,8 +5,12 @@ class MoviesController < ApplicationController
   protect_from_forgery with: :null_session
   @@valid_sorting_fields = ['title', 'releaseDate'];
   def show
-    @movie = Movie.find(params[:id])
-    render :json => @movie
+    @movie = Movie.find_by_id(params[:id])
+    if @movie.blank?
+      render :json => {:errors => 'movie not found'}, :status => 404
+    else
+      render :json => @movie
+    end
   end
   # def create
   #   @movie = Movie.new(params[:movie].permit(:title, :image, :rating, :releaseDate));
@@ -20,8 +24,10 @@ class MoviesController < ApplicationController
   end
 
   def update
-    @movie = Movie.find(params[:id])
-    if !checkReleaseDate(@movie[:releaseDate])
+    @movie = Movie.find_by_id(params[:id])
+    if @movie.blank?
+      render :json => {:errors => 'movie not found'}, :status => 404
+    elsif !checkReleaseDate(@movie[:releaseDate])
       render :json => {:errors => 'movie not release yet'}, :status => 400
     elsif !checkRating(params[:rating])
       render :json => {:errors => 'invalid rating input'}, :status => 400
