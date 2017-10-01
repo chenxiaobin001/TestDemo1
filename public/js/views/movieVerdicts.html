@@ -3,15 +3,31 @@
  -->
 <div class="oj-hybrid-padding oj-panel" style="margin-left: 1rem">
     <h1>Movie Verdicts</h1>
-        <div class="">
-            <oj-list-view class="oj-listview-card-layout"
-                id="listview" aria-label="list movies" style=""
-                data="[[dataSource]]"
-                item.renderer="[[oj.KnockoutTemplateUtils.getRenderer('movie_template')]]"
-                selection-mode="single"
-                scroll-policy-options.fetch-size="15">
-            </oj-list-view>
+    <div id="selection" >
+        <div class="oj-flex oj-sm-flex-items-initial oj-sm-justify-content-flex-end">
+            <div class="oj-flex-item" style="padding-right: 1em">
+                <oj-label for="sorting" style="padding-top: 0.5rem">Sort By</oj-label>
+            </div>
+            <oj-select-one class="oj-flex-item" id="sorting" value="{{sortSelection}}"
+                           on-value-changed="[[handleSortingChanged]]"
+                           style="max-width:20em; width:15em; min-width: 8em">
+                <oj-option value="titleAZ">Title(A-Z)</oj-option>
+                <oj-option value="titleZA">Title(Z-A)</oj-option>
+                <oj-option value="dateAZ">Release Date(Newest)</oj-option>
+                <oj-option value="dateZA">Release Date(Oldest)</oj-option>
+            </oj-select-one>
         </div>
+
+    </div>
+    <div id="movies-listview">
+        <oj-list-view class="oj-listview-card-layout"
+            id="listview" aria-label="list movies" style=""
+            data="[[dataSource]]"
+            item.renderer="[[oj.KnockoutTemplateUtils.getRenderer('movie_template')]]"
+            selection-mode="single"
+            scroll-policy-options.fetch-size="15">
+        </oj-list-view>
+    </div>
 </div>
 
 <script type="text/html" id="movie_template">
@@ -34,11 +50,11 @@
                 <div class="oj-lg-12 oj-md-12 oj-sm-12 oj-flex-item" style="padding: 5px 0 0 0">
                     <div style="width:100%">
                         <oj-rating-gauge
-                                data-bind="id:'gauge-id-' + id,attr:{'readOnly': !released},
+                                data-bind="id:'gauge-id-' + id,attr:{'readOnly': !released,
+                                        'selected-state.color': '#fbce4a',
+                                        'changed-state.color' : '#fbce4a'},
                                         event: {mouseover: $parent.getCurrentItem($data)}"
                                 value="{{ratingInt}}"
-                                selected-state.color="black"
-                                on-value-changed="{{$parent.updateRating}}"
                                 style="width:120px;height:25px;"></oj-rating-gauge>
                     </div>
                 </div>

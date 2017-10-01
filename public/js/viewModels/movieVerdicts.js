@@ -6,7 +6,8 @@
  * Your dashboard ViewModel code goes here
  */
 define(['ojs/ojcore', 'knockout', 'jquery','ojs/ojknockout', 'promise', 'ojs/ojlistview',
-        'ojs/ojcollectiontabledatasource', 'ojs/ojmodel', 'ojs/ojgauge', 'ojs/ojdatetimepicker'],
+        'ojs/ojcollectiontabledatasource', 'ojs/ojmodel', 'ojs/ojgauge',
+        'ojs/ojdatetimepicker', 'ojs/ojselectcombobox'],
     function(oj, ko, $) {
   
         function DashboardViewModel() {
@@ -113,6 +114,24 @@ define(['ojs/ojcore', 'knockout', 'jquery','ojs/ojknockout', 'promise', 'ojs/ojl
                 self.currentItem(data);
             };
 
+            self.sepupSortingSeletion = function() {
+                self.sortSelection = ko.observable([]);
+                self.criteriaMap = {};
+                self.criteriaMap['titleAZ'] = {key: 'title', direction: 'ascending'};
+                self.criteriaMap['titleZA'] = {key: 'title', direction: 'descending'};
+                self.criteriaMap['dateAZ'] = {key: 'releaseDate', direction: 'ascending'};
+                self.criteriaMap['dateZA'] = {key: 'releaseDate', direction: 'descending'};
+            };
+
+            self.handleSortingChanged = function(event, ui) {
+                var value = event.detail.value;
+                var criteria = self.criteriaMap[event.detail.value];
+                self.dataSource().sort(criteria);
+            };
+            self.init = function() {
+                self.sepupSortingSeletion();
+            };
+
             self.updateRating = function(event) {
                 var url = getBaseUrl() + self.currentItem().id;
                 var data = self.currentItem();
@@ -127,7 +146,9 @@ define(['ojs/ojcore', 'knockout', 'jquery','ojs/ojknockout', 'promise', 'ojs/ojl
                     // for failure case
                     alert(jqXHR.responseText);
                 });
-            }
+            };
+
+            self.init();
         }
 
         /*

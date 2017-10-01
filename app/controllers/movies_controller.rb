@@ -1,7 +1,9 @@
 class MoviesController < ApplicationController
   # def new
   # end
+  require 'cgi'
   protect_from_forgery with: :null_session
+  @@valid_sorting_fields = ['title', 'releaseDate'];
   def show
     @movie = Movie.find(params[:id])
     render :json => @movie
@@ -12,7 +14,12 @@ class MoviesController < ApplicationController
   #   redirect_to @movie
   # end
   def index
-    @movies = Movie.all
+    queryParams = parseURLParameters(request.original_url)
+    if queryParams[:sortDirection] != 'asc'
+      @movies = Movie.order(queryParams[:sortField] + ' ' + queryParams[:sortDirection]).limit(queryParams["limit"]).offset(queryParams["offset"])
+    else
+      @movies = Movie.order(queryParams[:sortField]).limit(queryParams["limit"]).offset(queryParams["offset"])
+    end
     render :json => @movies
   end
 
@@ -37,5 +44,28 @@ class MoviesController < ApplicationController
   def checkRating(rating)
     rating = Integer(rating)
     return rating >= 0 && rating <= 5
+  end
+
+  def parseURLParameters(url)
+    params = CGI.parse(URI.parse(url).query)
+    # check parameter range
+    params["offset"] ||= [0]
+    params["offset"] = Integer(params["offset"][0])
+    params["offset"] = params["offset"] >= 0 ? params["offset"] : 0
+    params["limit"] ||= [10]
+    params["limit"] = Integer(params["limit"][0])
+    params["limit"] = params["limit"] >= 0 ? params["limit"] : 10
+    params["orderBy"] ||= ['title:asc']
+    tmp = params["orderBy"][0].split(':');
+    if (!@@valid_sorting_fields.include? tmp[0])
+      tmp[0] = 'title'
+    end
+    params[:sortField] = tmp[0]
+    if tmp.length == 1
+      params[:sortDirection] = 'asc'
+    else
+      params[:sortDirection] = params["orderBy"][0].split(':')[1]
+    end
+    return params
   end
 end
