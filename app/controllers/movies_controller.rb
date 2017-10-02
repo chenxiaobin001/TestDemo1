@@ -20,7 +20,7 @@ class MoviesController < ApplicationController
   def index
     queryParams = parseURLParameters(params)
     @movies = Movie.order(queryParams[:sortField] + ' ' + queryParams[:sortDirection]).limit(queryParams["limit"]).offset(queryParams["offset"])
-    render :json => @movies
+    render :json => {:items => @movies}
   end
 
   def update
@@ -32,7 +32,7 @@ class MoviesController < ApplicationController
     elsif !checkRating(params[:rating])
       render :json => {:errors => 'invalid rating input'}, :status => 400
     elsif @movie.update_attribute('rating', params[:rating])
-      render :json => @movie
+      render :json => @movie, :status => 204
     else
       render :json => {:errors => @movie.errors.full_messages}, :status => 422
     end
